@@ -29,11 +29,11 @@ def plot_points(X):
     plt.show()
 
 
-def dist(x1, x2):
-    '''
-    returns euclidian distance between x1 and x2
-    '''
-    return numpy.linalg.norm(x1-x2)
+def sample_spherical(npoints, ndim=3):
+    vec = np.random.randn(ndim, npoints)
+    vec /= np.linalg.norm(vec, axis=0)
+    vec = np.transpose(vec)
+    return vec
 
 
 def minimize(X):
@@ -42,9 +42,6 @@ def minimize(X):
     returns minimum R and r and obsolete points
     '''
     eps = 0.1
-    R, r = 0, 0
-
-    # while R and r are not found
     R = 0.1
     r = 0.1
 
@@ -81,12 +78,12 @@ def getObsoleteSensors(X, R, r):
 
 def generate():
     '''
-    generate a set of 50 points with parameters
-    r and R as small as possible
+    generate a set of 50 points with
+    parameters r and R as small as possible
     '''
-    X = []
-
-    return X
+    X = sample_spherical(50, ndim=3)
+    R, r, obs = minimize(X)
+    return X, R, r, obs
 
 
 if __name__ == '__main__':
