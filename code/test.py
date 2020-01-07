@@ -11,12 +11,9 @@ Goal:
 
 ToDo:
 - implement function generate_Cech_complex(X)
-- implement function get_Euler_characteristic(K)
-- implement function minimize(X)
-    - we need to search for near optimal R and r
-    - right now we only search for optimal R and r where R = r
+- test function get_Euler_characteristic(K)
+- finish implementing function minimize(X)
 - implement function getObsoleteSensors(X, R, r)
-- function generate should generate near optimal point distribution
 - create nice visualization for generated points and spheres
 '''
 
