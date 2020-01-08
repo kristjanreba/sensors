@@ -10,7 +10,7 @@ Goal:
 
 
 ToDo:
-- implement function generate_Cech_complex(X)
+- implement function generate_Cech_complex(X, R)
 - test function get_Euler_characteristic(K)
 - finish implementing function minimize(X)
 - implement function getObsoleteSensors(X, R, r)
@@ -66,7 +66,7 @@ def get_Euler_characteristic(K):
     return euler_c
 
 
-def generate_Cech_complex(X, r):
+def generate_Cech_complex(X, R):
     '''
     X -> list of points
     returns Cech simplicial complex K
@@ -81,12 +81,12 @@ def minimize(X):
     returns minimum R and r and obsolete points
     '''
     eps = 0.01
-    R = 0.4 # keep at least 0.4 otherwise we get segmentation fault in gudhi library
-    r = 0.1
+    R = 0.1
+    r = 0.4 # keep at least 0.4 otherwise we get segmentation fault in gudhi library
 
     while True:
         print('R =', R, 'r = ', r)
-        rips_complex = gudhi.RipsComplex(points=X, max_edge_length=R)
+        rips_complex = gudhi.RipsComplex(points=X, max_edge_length=r)
         simplex_tree = rips_complex.create_simplex_tree(max_dimension=1)
         simplex_tree.persistence()
         betti_nums = simplex_tree.betti_numbers()
@@ -96,17 +96,17 @@ def minimize(X):
             #generate Cech complex
             #check if  Cech complex is homotopy equivalent to a sphere
             #we can check Euler characteristic of Cech complex and compare it to 2
-            cech_complex = generate_Cech_complex(X, r)
+            cech_complex = generate_Cech_complex(X, R)
             if get_Euler_characteristic(cech_complex) == 2:
                 # we have a valid sensor configuration
                 # current R and r are good enough
                 break
             else:
-                # the sensor configuration does not cover the whole sphere (increase sensor range r)
-                r += eps
+                # the sensor configuration does not cover the whole sphere (increase sensor range R)
+                R += eps
         else:
-            # not all sensors are connected (increase connecting radious R)
-            R += eps
+            # not all sensors are connected (increase connecting radious r)
+            r += eps
         
     obs = getObsoleteSensors(X, R, r)
     return R, r, obs
@@ -146,14 +146,14 @@ def fibonacci_sphere(npoints=1):
     return points
 
 
-def plot_circles(X, r):
+def plot_circles(X, R):
     X_np = np.array(X)
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(X_np[:,0], X_np[:,1], X_np[:,2], c='r')
     for point in X:
         x,y,z = point[0], point[1], point[2]
-        p = Circle((0, 0), r, alpha=0.4)
+        p = Circle((0, 0), R, alpha=0.4)
         ax.add_patch(p)
         normal = [x,y,z]
         pathpatch_2d_to_3d(p, z=0, normal=normal)
