@@ -14,7 +14,6 @@ ToDo:
 - test function get_Euler_characteristic(K)
 - finish implementing function minimize(X)
 - implement function getObsoleteSensors(X, R, r)
-- create nice visualization for generated points and spheres
 '''
 
 import math
@@ -166,7 +165,7 @@ def plot_circles(X, r):
     plt.show()
 
 
-def rotation_matrix(v1,v2):
+def rotation_matrix(v1, v2):
     """
     Calculates the rotation matrix that changes v1 into v2.
     """
@@ -193,7 +192,7 @@ def rotation_matrix(v1,v2):
     return M
 
 
-def pathpatch_2d_to_3d(pathpatch, z = 0, normal = 'z'):
+def pathpatch_2d_to_3d(pathpatch, z=0, normal='z'):
     """
     Transforms a 2D Patch to a 3D patch using the given normal vector.
 
