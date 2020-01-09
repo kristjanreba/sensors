@@ -116,8 +116,18 @@ def getObsoleteSensors(X, R, r):
     '''
     returns all the obsolete sensors for given X, R and r
     '''
+    X = np.array(X)
+    print(X.shape)
     obs = []
-
+    for i in range(X.shape[0]):
+        removed_point = X[i,:]
+        X = np.delete(X, i, 0)
+        # generate cech complex without removed point
+        cech_complex = generate_Cech_complex(X, R)
+        if get_Euler_characteristic(cech_complex) == 2:
+            obs.append(removed_point)
+        else:
+            X = np.vstack((removed_point, X)) # put the removed point back
     return obs
 
 
@@ -183,9 +193,9 @@ def rotation_matrix(v1, v2):
 
         eye = np.eye(3)
         ddt = np.outer(d, d)
-        skew = np.array([[    0,  d[2],  -d[1]],
-                      [-d[2],     0,  d[0]],
-                      [d[1], -d[0],    0]], dtype=np.float64)
+        skew = np.array([[0,d[2],-d[1]],
+                        [-d[2],0,d[0]],
+                        [d[1],-d[0],0]], dtype=np.float64)
 
         M = ddt + cos_angle * (eye - ddt) + sin_angle * skew
 
@@ -239,7 +249,9 @@ if __name__ == '__main__':
     #X = sample_spherical(50, ndim=3)
     #plot_points(X)
 
-    X = fibonacci_sphere(npoints=50)
-    plot_circles(X, 0.4)
+    #X = fibonacci_sphere(npoints=50)
+    #plot_circles(X, 0.4)
+
+    print(getObsoleteSensors(X, 0.4, 0.4))
     
     
