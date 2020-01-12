@@ -12,8 +12,6 @@ Goal:
 ToDo:
 - implement function generate_Cech_complex(X, R)
 - test function get_Euler_characteristic(K)
-- finish implementing function minimize(X)
-- implement function getObsoleteSensors(X, R, r)
 '''
 
 import math
@@ -28,6 +26,10 @@ from matplotlib.patches import Circle, PathPatch
 import matplotlib.pyplot as plt
 
 from collections import Counter
+
+import rips
+import cech as ch
+
 
 
 def plot_points(X):
@@ -54,25 +56,14 @@ def sample_spherical(npoints, ndim=3):
 
 def get_Euler_characteristic(K):
     '''
-    K -> simplicial complex (list of simplices)
+    K -> simplicial complex (dictionary of lists of simplices)
     returns Euler characteristic of K
     '''
     euler_c = 0
-    dims = [len(w) for w in K]
-    dims = list(Counter(dims).values())
-    for i in range(len(dims)):
-        if i % 2 == 0: euler_c += dims[i]
-        else: euler_c -= dims[i]
+    for key, value in K.items():
+        if key % 2 == 0: euler_c += len(value)
+        else: euler_c -= len(value)
     return euler_c
-
-
-def generate_Cech_complex(X, R):
-    '''
-    X -> list of points
-    returns Cech simplicial complex K
-    '''
-    K = []
-    return K
 
 
 def minimize(X):
@@ -96,7 +87,7 @@ def minimize(X):
             #generate Cech complex
             #check if  Cech complex is homotopy equivalent to a sphere
             #we can check Euler characteristic of Cech complex and compare it to 2
-            cech_complex = generate_Cech_complex(X, R)
+            cech_complex = ch.cech(X, R)
             if get_Euler_characteristic(cech_complex) == 2:
                 # we have a valid sensor configuration
                 # current R and r are good enough
@@ -116,18 +107,18 @@ def getObsoleteSensors(X, R, r):
     '''
     returns all the obsolete sensors for given X, R and r
     '''
-    X = np.array(X)
-    print(X.shape)
+    cech_complex = ch.cech(X, R)
     obs = []
-    for i in range(X.shape[0]):
-        removed_point = X[i,:]
-        X = np.delete(X, i, 0)
+    i = 0
+    while i < len(X):
+        removed_point = X.pop(i)
         # generate cech complex without removed point
-        cech_complex = generate_Cech_complex(X, R)
+        cech_complex = ch.cech(X, R)
         if get_Euler_characteristic(cech_complex) == 2:
             obs.append(removed_point)
         else:
-            X = np.vstack((removed_point, X)) # put the removed point back
+            X.insert(0, removed_point)
+            i += 1
     return obs
 
 
@@ -238,9 +229,11 @@ def pathpatch_translate(pathpatch, delta):
 
 if __name__ == '__main__':
     X = [[0.0740328,-0.0669765,-0.995004],[-0.0424728,-0.0903481,-0.995004],[0.49942,-0.26344,-0.825336],[0.520044,0.219943,-0.825336],[0.158841,0.54184,-0.825336],[-0.318986,0.465907,-0.825336],[-0.562607,0.0478954,-0.825336],[-0.393151,-0.405282,-0.825336],[0.0649644,-0.560893,-0.825336],[0.475382,-0.304685,-0.825336],[0.866629,-0.207856,-0.453596],[0.844371,0.28511,-0.453596],[0.563236,0.690663,-0.453596],[0.109417,0.884465,-0.453596],[-0.377948,0.807097,-0.453596],[-0.749438,0.482279,-0.453596],[-0.891156,0.00959889,-0.453596],[-0.759652,-0.466025,-0.453596],[-0.395246,-0.798769,-0.453596],[0.0903402,-0.886617,-0.453596],[0.548228,-0.702635,-0.453596],[0.838034,-0.303231,-0.453596],[0.999467,0.0145951,0.0291995],[0.870013,0.492164,0.0291995],[0.527371,0.849133,0.0291995],[0.0555024,0.998031,0.0291995],[-0.429966,0.902373,0.0291995],[-0.810076,0.585597,0.0291995],[-0.991686,0.125327,0.0291995],[-0.930293,-0.365653,0.0291995],[-0.640942,-0.767034,0.0291995],[-0.194535,-0.980461,0.0291995],[0.299541,-0.953636,0.0291995],[0.720218,-0.693133,0.0291995],[0.964412,-0.262785,0.0291995],[0.833167,0.225751,0.504846],[0.57369,0.644988,0.504846],[0.127056,0.853807,0.504846],[-0.361029,0.784085,0.504846],[-0.731333,0.458566,0.504846],[-0.863051,-0.0165536,0.504846],[-0.713211,-0.486272,0.504846],[-0.330696,-0.797352,0.504846],[0.159703,-0.848307,0.504846],[0.598002,-0.622515,0.504846],[0.841211,-0.193636,0.504846],[0.448738,0.253724,0.856889],[0.0444146,0.513584,0.856889],[-0.398518,0.326994,0.856889],[-0.495025,-0.143847,0.856889],[-0.161214,-0.489644,0.856889],[0.312737,-0.409801,0.856889],[0.514831,0.0262759,0.856889],[0.030007,0.0287842,0.999135]]
-    #plot_points(X)
     
-    #print(minimize(X))
+    print(minimize(X))
+    plot_circles(X, 0.4)
+    
+    
     #print(generate())
 
     #X = fibonacci_sphere(npoints=50)
@@ -250,8 +243,8 @@ if __name__ == '__main__':
     #plot_points(X)
 
     #X = fibonacci_sphere(npoints=50)
-    #plot_circles(X, 0.4)
+    
 
-    print(getObsoleteSensors(X, 0.4, 0.4))
+    #print(getObsoleteSensors(X, 0.4, 0.4))
     
     
