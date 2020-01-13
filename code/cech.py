@@ -3,7 +3,7 @@ import random
 import math
 
 
-def circle(p1,p2,p3):
+def circle(p1, p2, p3):
     a = math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2 + (p1[2] - p2[2]) ** 2)
     b = math.sqrt((p1[0] - p3[0]) ** 2 + (p1[1] - p3[1]) ** 2 + (p1[2] - p3[2]) ** 2)
     c = math.sqrt((p2[0] - p3[0]) ** 2 + (p2[1] - p3[1]) ** 2 + (p2[2] - p3[2]) ** 2)
@@ -18,9 +18,12 @@ def circle(p1,p2,p3):
     (c, r) = ((-B / (2 * A), -C / (2 * A)), (B ** 2 + C ** 2 - 4 * A * D) / (4 * A ** 2))
     alpha = (c[0] * y3 - c[1] * x3) / (x2 * y3 - y2 * x3)
     beta = (-c[0] * y2 + c[1] * x2) / (x2 * y3 - y2 * x3)
-    return ((p1[0] + alpha * (p2[0] - p1[0]) + beta * (p3[0] - p1[0]),
-             p1[1] + alpha * (p2[1] - p1[1]) + beta * (p3[1] - p1[1]),
-             p1[2] + alpha * (p2[2] - p1[2]) + beta * (p3[2] - p1[2])), r)
+
+    x = p1[0] + alpha * (p2[0] - p1[0]) + beta * (p3[0] - p1[0])
+    y = p1[1] + alpha * (p2[1] - p1[1]) + beta * (p3[1] - p1[1])
+    z = p1[2] + alpha * (p2[2] - p1[2]) + beta * (p3[2] - p1[2])
+    # r is radius squared
+    return ((x, y, z), r)
 
 
 def sphere(p1, p2, p3, p4):
@@ -28,7 +31,7 @@ def sphere(p1, p2, p3, p4):
     (b1, b2, b3) = p2
     (c1, c2, c3) = p3
     (d1, d2, d3) = p4
-    f1 = ((a1 ** 2 + a2 ** 2 + a3 ** 2) * (c2 * d3 + d2 * b3 + b2 * c3 - d2 * c3 - b2 * d3 - c2 * b3) + (
+    x = ((a1 ** 2 + a2 ** 2 + a3 ** 2) * (c2 * d3 + d2 * b3 + b2 * c3 - d2 * c3 - b2 * d3 - c2 * b3) + (
                 b1 ** 2 + b2 ** 2 + b3 ** 2) * (d2 * c3 + c2 * a3 + a2 * d3 - c2 * d3 - a2 * c3 - d2 * a3) + (
                       c1 ** 2 + c2 ** 2 + c3 ** 2) * (a2 * b3 + b2 * d3 + d2 * a3 - b2 * a3 - d2 * b3 - a2 * d3) + (
                       d1 ** 2 + d2 ** 2 + d3 ** 2) * (b2 * a3 + a2 * c3 + c2 * b3 - a2 * b3 - c2 * a3 - b2 * c3)) / (
@@ -36,7 +39,7 @@ def sphere(p1, p2, p3, p4):
                          d2 * c3 + c2 * a3 + a2 * d3 - c2 * d3 - a2 * c3 - d2 * a3) + c1 * (
                                  a2 * b3 + b2 * d3 + d2 * a3 - b2 * a3 - d2 * b3 - a2 * d3) + d1 * (
                                  b2 * a3 + a2 * c3 + c2 * b3 - a2 * b3 - c2 * a3 - b2 * c3))
-    f2 = ((a1 ** 2 + a2 ** 2 + a3 ** 2) * (c1 * d3 + d1 * b3 + b1 * c3 - d1 * c3 - b1 * d3 - c1 * b3) + (
+    y = ((a1 ** 2 + a2 ** 2 + a3 ** 2) * (c1 * d3 + d1 * b3 + b1 * c3 - d1 * c3 - b1 * d3 - c1 * b3) + (
                 b1 ** 2 + b2 ** 2 + b3 ** 2) * (d1 * c3 + c1 * a3 + a1 * d3 - c1 * d3 - a1 * c3 - d1 * a3) + (
                       c1 ** 2 + c2 ** 2 + c3 ** 2) * (a1 * b3 + b1 * d3 + d1 * a3 - b1 * a3 - d1 * b3 - a1 * d3) + (
                       d1 ** 2 + d2 ** 2 + d3 ** 2) * (b1 * a3 + a1 * c3 + c1 * b3 - a1 * b3 - c1 * a3 - b1 * c3)) / (
@@ -44,7 +47,7 @@ def sphere(p1, p2, p3, p4):
                          d1 * c3 + c1 * a3 + a1 * d3 - c1 * d3 - a1 * c3 - d1 * a3) + c2 * (
                                  a1 * b3 + b1 * d3 + d1 * a3 - b1 * a3 - d1 * b3 - a1 * d3) + d2 * (
                                  b1 * a3 + a1 * c3 + c1 * b3 - a1 * b3 - c1 * a3 - b1 * c3))
-    f3 = ((a1 ** 2 + a2 ** 2 + a3 ** 2) * (c1 * d2 + d1 * b2 + b1 * c2 - d1 * c2 - b1 * d2 - c1 * b2) + (
+    z = ((a1 ** 2 + a2 ** 2 + a3 ** 2) * (c1 * d2 + d1 * b2 + b1 * c2 - d1 * c2 - b1 * d2 - c1 * b2) + (
                 b1 ** 2 + b2 ** 2 + b3 ** 2) * (d1 * c2 + c1 * a2 + a1 * d2 - c1 * d2 - a1 * c2 - d1 * a2) + (
                       c1 ** 2 + c2 ** 2 + c3 ** 2) * (a1 * b2 + b1 * d2 + d1 * a2 - b1 * a2 - d1 * b2 - a1 * d2) + (
                       d1 ** 2 + d2 ** 2 + d3 ** 2) * (b1 * a2 + a1 * c2 + c1 * b2 - a1 * b2 - c1 * a2 - b1 * c2)) / (
@@ -52,10 +55,12 @@ def sphere(p1, p2, p3, p4):
                          d1 * c2 + c1 * a2 + a1 * d2 - c1 * d2 - a1 * c2 - d1 * a2) + c3 * (
                                  a1 * b2 + b1 * d2 + d1 * a2 - b1 * a2 - d1 * b2 - a1 * d2) + d3 * (
                                  b1 * a2 + a1 * c2 + c1 * b2 - a1 * b2 - c1 * a2 - b1 * c2))
-    return ((f1, f2, f3), (a1 - f1) ** 2 + (a2 - f2) ** 2 + (a3 - f3) ** 2)
+    # r is radius squared
+    r = (a1 - x) ** 2 + (a2 - y) ** 2 + (a3 - z) ** 2
+    return ((x, y, z), r)
 
 
-def minBall(tau, ni):
+def MinBall(tau, ni):
     if len(tau) == 0 or len(ni) == 4:
         ln = len(ni)
         if ln == 0:
@@ -73,11 +78,11 @@ def minBall(tau, ni):
             c = (ni[2][0] - ni[1][0]) ** 2 + (ni[2][1] - ni[1][1]) ** 2 + (ni[2][2] - ni[1][2]) ** 2
             if max([a, b, c]) * 2 >= sum([a, b, c]):
                 if a == max([a, b, c]):
-                    return minBall([], [ni[0], ni[1]])
+                    return MinBall([], [ni[0], ni[1]])
                 elif b == max([a, b, c]):
-                    return minBall([], [ni[0], ni[2]])
+                    return MinBall([], [ni[0], ni[2]])
                 else:
-                    return minBall([], [ni[2], ni[1]])
+                    return MinBall([], [ni[2], ni[1]])
             else:
                 return circle(ni[0], ni[1], ni[2])
         else:
@@ -94,17 +99,18 @@ def minBall(tau, ni):
             if (ni[0][0] - B[0][0]) ** 2 + (ni[0][1] - B[0][1]) ** 2 + (ni[0][2] - B[0][2]) ** 2 <= B[1]:
                 return B
             return sphere(ni[0], ni[1], ni[2], ni[3])
+
     else:
         u = tau[random.randint(0, len(tau) - 1)]
         t = [v for v in tau if v != u]
-        B = minBall(t, ni)
+        B = MinBall(t, ni)
         if (u[0] - B[0][0]) ** 2 + (u[1] - B[0][1]) ** 2 + (u[2] - B[0][2]) ** 2 > B[1]:
-            B = minBall(t, ni + [u])
+            B = MinBall(t, ni + [u])
         return B
 
 
 def cech(S, epsilon):
     candidates = rips.VR(S, 2 * epsilon)
     for i, sxes in candidates.items():
-        candidates[i] = [sx for sx in sxes if minBall([S[j] for j in sx], [])[1] <= epsilon ** 2]
+        candidates[i] = [sx for sx in sxes if MinBall([S[j] for j in sx], [])[1] <= epsilon ** 2]
     return candidates
